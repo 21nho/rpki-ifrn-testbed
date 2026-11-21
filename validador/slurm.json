@@ -1,0 +1,18 @@
+{
+  "slurmVersion": 1,
+  "validationOutputFilters": {
+    "prefixFilters": [],
+    "bgpsecFilters": []
+  },
+  "locallyAddedAssertions": {
+    "prefixAssertions": [
+      {
+        "asn": 266174,
+        "prefix": "160.19.252.0/24",
+        "maxPrefixLength": 24,
+        "comment": "ROA hipotetico do IFRN para o TCC"
+      }
+    ],
+    "bgpsecAssertions": []
+  }
+}
