@@ -1,7 +1,7 @@
 # rpki-ifrn-testbed
 
 Artefatos do artigo **"Eficácia e Limites do RPKI na Mitigação de Sequestro de
-Prefixos BGP: um Estudo de Caso no IFRN"** (Diniz, Soares e Vieira Júnior,
+Prefixos BGP: um Estudo de Caso no IFRN"** (Victor, Rezembrim e Ivanilson,
 IFRN, 2026).
 
 O testbed reproduz a conectividade do IFRN (AS266174), que tem a RNP (AS1916)
