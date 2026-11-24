@@ -40,12 +40,15 @@ prefixo, com e sem RPKI/ROV.
 ```
 routers/     configuração base do FRR de cada roteador
 validador/   slurm.json (ROA hipotético do IFRN) e notas do Routinator
-fases/       passo a passo de cada fase (A, B, C) com os comandos de verificação
+fases/       passo a passo de cada fase (0, A, B, C) com os comandos de verificação
 evidencias/  capturas de terminal de cada cenário
 topologia/   diagrama da topologia
 ```
 
 ## Cenários
+A [Fase 0](fases/fase0.md) registra o estado inicial, sem ataque, como
+referência para as demais.
+
 | ID | Cenário | Sequestro |
 |---|---|---|
 | A1 | Prefixo exato (/24), sem ROV | bem-sucedido |
@@ -62,7 +65,7 @@ topologia/   diagrama da topologia
    correspondente (com o daemon `bgpd` habilitado e o módulo RPKI carregado
    nos roteadores RNP e OBS).
 3. Inicie o Routinator com o `validador/slurm.json` como arquivo de exceções.
-4. Siga `fases/faseA.md`, `fases/faseB.md` e `fases/faseC.md` em ordem.
+4. Siga `fases/fase0.md`, `fases/faseA.md`, `fases/faseB.md` e `fases/faseC.md` em ordem.
 
 Os horários das evidências referem-se ao relógio dos contêineres (UTC).
 
