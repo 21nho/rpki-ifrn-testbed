@@ -55,6 +55,8 @@ atacante `65666 266174` (2 ASes).
    neighbor 10.6.0.2 remote-as 65300
    neighbor 10.6.0.2 description TRANSIT
   ```
+- O OBS continua ligado diretamente ao switch do validador (`eth3`), então a
+  sessão RTR não depende do TRANSIT nem da RNP neste cenário.
 - No OBS, o vizinho `10.3.0.1` passa a ser o TRANSIT:
   ```
   router bgp 65100
