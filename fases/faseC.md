@@ -20,8 +20,23 @@ router bgp 65666
  address-family ipv4 unicast
   network 160.19.252.0/24
 ```
-Resultado no OBS: rota `65666` *invalid* e descartada; vence `1916 266174`.
-Evidência: [`evidencias/faseC1_obs.png`](../evidencias/faseC1_obs.png)
+Verificação no OBS:
+```
+show bgp ipv4 unicast 160.19.252.0/24
+clear bgp ipv4 unicast * soft in
+show bgp ipv4 unicast neighbors 10.4.0.1 received-routes
+show bgp ipv4 unicast neighbors 10.4.0.1 filtered-routes
+show bgp ipv4 unicast
+traceroute 160.19.252.1
+```
+- **Antes da reavaliação:** a rota `65666` já aparece com
+  `rpki validation-state: invalid`, mas ainda é eleita (`best (AS Path)`).
+  A política só passa a valer após o `clear ... soft in`.
+- **Depois:** o /24 e o /25 do ATK são filtrados; a tabela fica só com
+  `1916 266174` (*valid*), e o traceroute alcança o IFRN
+  (`10.3.0.1` → `160.19.252.1`).
+
+Evidência: [`faseC1_obs.png`](../evidencias/faseC1_obs.png)
 
 ## C2 - Origem forjada (forged-origin hijack)
 
@@ -47,6 +62,10 @@ atacante `65666 266174` (2 ASes).
    neighbor 10.3.0.1 description TRANSIT
   ```
 
+Antes do anúncio do atacante, o OBS tem uma única rota, `65300 1916 266174`,
+recebida do TRANSIT (router ID `3.3.3.3`) e classificada como *valid*.
+Evidência: [`faseC2_obs_pre.png`](../evidencias/faseC2_obs_pre.png)
+
 ### Anúncio do atacante
 No ATK, a origem forjada é aplicada **só na sessão com o OBS**; se for aplicada
 também na RNP, ela veria a origem forjada e o contraste do teste se perde.
@@ -60,7 +79,19 @@ router bgp 65666
   neighbor 10.4.0.2 route-map FORGE-ORIGIN out
 ```
 
-Resultado no OBS: as duas rotas são *valid*; o ATK vence por AS_PATH mais curto
-e o `traceroute` confirma o desvio. Repetindo com `network 160.19.252.0/25`, a
-rota forjada é *invalid* por violar o maxLength 24 e é descartada.
-Evidência: [`evidencias/faseC2_obs.png`](../evidencias/faseC2_obs.png)
+Com o ATK anunciando o /24 e o /25, ambos com a origem forjada:
+
+- As duas rotas para o /24 são *valid*: `65666 266174` (ATK) e
+  `65300 1916 266174` (TRANSIT). A do ATK é eleita por AS_PATH mais curto,
+  com próximo salto `10.4.0.1`.
+- O /25 forjado é filtrado: a origem confere com o ROA, mas o comprimento
+  excede o maxLength 24. Como sem o VRP do IFRN ele seria *not found* e
+  passaria, isso também mostra que o OBS tinha o VRP carregado durante o C2.
+- O traceroute do OBS para `160.19.252.1` fica sem resposta já no primeiro
+  salto, comportamento compatível com o descarte no ATK (rota `Null0`). A
+  prova do desvio é a tabela, que elege a rota do ATK.
+- A propagação até o DEST neste cenário não foi registrada.
+
+Evidências:
+[`faseC2_obs.png`](../evidencias/faseC2_obs.png),
+[`faseC2_obs_parte2.png`](../evidencias/faseC2_obs_parte2.png)
