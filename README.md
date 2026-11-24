@@ -36,6 +36,11 @@ prefixo, com e sem RPKI/ROV.
 | ATK - OBS | 10.4.0.0/30 | Fases A e C |
 | Validador (switch) | 10.1.0.0/24 | sessões RTR |
 
+No switch do validador ficam o validador (`.1`), o IFRN (`.2`), a RNP (`.3`)
+e o OBS. O OBS foi ligado diretamente ao switch durante todo o experimento;
+o endereço dele não foi registrado, e o `.4` usado em
+`routers/obs/frr.conf` é sugerido para reprodução.
+
 ## Estrutura
 ```
 routers/     configuração base do FRR de cada roteador
